@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Send POST Request</title>
+</head>
+<body>
+
+    <div id="fom">
+        <label for="email">Nhập email của bạn</label>
+        <input type="text" name="email" id="email">
+        <button onclick="sendData()" id="send">Gửi</button>
+        <div id="content"></div>
+    </div>
+    <div id="fom2" style="display: none;">
+        <label for="valN">Nhập mã xác thực gửi đến <span id="em1"></span></label><br>
+        <input type="text" name="valN" id="valN">
+        <button onclick="valNum()" id="send2">Gửi</button>
+        <div id="content"></div>
+    </div>
+
+
+    <script>
+        async function sendData() {
+            document.getElementById("send").disabled = true
+            document.getElementById("content").textContent = "Vui lòng đợi trong ít giây"
+            const url = 'http://localhost:3000/send-email'; // Update with your server endpoint
+            const email = document.getElementById("email").value
+            const data = {
+                email: email, // Update with the recipient email address
+            };
+
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            });
+
+            const result = await response.json();
+            console.log(result);
+            let fom = document.getElementById("fom")
+            let fom2 = document.getElementById("fom2")
+            let em1 = document.getElementById("em1")
+            fom.style.display = "none"
+            fom2.style.display = "block"
+            em1.textContent = email
+
+        }
+
+        async function valNum() {
+            document.getElementById("send2").disabled = true
+            document.getElementById("content").textContent = "Vui lòng đợi trong ít giây"
+            const url = 'http://localhost:3000/numValidate'; // Update with your server endpoint
+            const valN = document.getElementById("valN").value
+            const data = {
+                valN: valN, // Update with the recipient email address
+            };
+
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            });
+            if (!response.ok) {
+            document.write("SAI MÃ")
+             }else{
+            const result = await response.json();
+            console.log(result);
+            let fom2 = document.getElementById("fom2")
+            fom2.innerHTML = "Vui lòng kiểm tra email của bạn"
+             }
+
+        }
+    </script>
+</body>
+</html>
